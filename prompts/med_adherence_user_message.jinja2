@@ -1,0 +1,11 @@
+Patient Profile: {{ patient_profile | tojson }}
+
+Examples of messages with high success likelihood for patients with similar profiles:
+{% for msg in high_success_messages %}
+    {{ loop.index }}. {{ msg }}
+{% endfor %}
+
+Examples of messages with low success likelihood for patients with similar profiles:
+{% for msg in low_success_messages %}
+    {{ loop.index }}. {{ msg }}
+{% endfor %}

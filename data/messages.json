@@ -1,0 +1,77 @@
+[
+   {
+      "message":"Hi [Name], it's time for your [medication] dose. Take it now and stay on track!"
+   },
+   {
+      "message":"You're doing great, [Name]! Don't forget your [medication] tonight—consistency is key."
+   },
+   {
+      "message":"Did you know? Taking your [medication] helps manage your [condition]. Time for your dose!"
+   },
+   {
+      "message":"Important: Don't miss your [medication] today. It's crucial for your health."
+   },
+   {
+      "message":"Hey [Name], just a quick reminder to take your [medication]. You've got this!"
+   },
+   {
+      "message":"Good morning, [Name]! Start your day right—take your [medication] with breakfast."
+   },
+   {
+      "message":"Hi [Name], your insulin is due now. Keeping your blood sugar steady is important!"
+   },
+   {
+      "message":"Take your blood pressure medication now, [Name]. It helps keep your heart healthy."
+   },
+   {
+      "message":"Remember, [Name], two pills of [medication] with water. Time to take them!"
+   },
+   {
+      "message":"Hi [Name], it's time for your [medication] injection. Follow the instructions carefully."
+   },
+   {
+      "message":"Don't forget your inhaler puff, [Name]. Breathe easy!"
+   },
+   {
+      "message":"Hi [Name], you should have [X] pills left. Time for your daily dose."
+   },
+   {
+      "message":"Running low? Refill your [medication] soon. Take today's dose now."
+   },
+   {
+      "message":"If you feel dizzy after [medication], sit down and rest. Take your dose now."
+   },
+   {
+      "message":"Take your [medication] with a full glass of water. Stay hydrated!"
+   },
+   {
+      "message":"Hi [Name], take your [medication] after your meal as prescribed."
+   },
+   {
+      "message":"Oops, [Name]! You missed your [medication] dose. Take it as soon as you can."
+   },
+   {
+      "message":"Great job, [Name]! You've taken your meds for [X] days straight. Keep it up!"
+   },
+   {
+      "message":"How are you feeling, [Name]? Don't forget your [medication] to stay on top of your [condition]."
+   },
+   {
+      "message":"Your doctor recommends taking [medication] at this time. Stay compliant!"
+   },
+   {
+      "message":"Hi [Name], your [medication] is best taken at night. Set a reminder!"
+   },
+   {
+      "message":"Hi [Caregiver], please remind [Name] to take their [medication] now."
+   },
+   {
+      "message":"Even on weekends, your health matters, [Name]. Take your [medication] as usual."
+   },
+   {
+      "message":"Stay strong, [Name]! Your [medication] keeps you going—take it now."
+   },
+   {
+      "message":"Feeling off? Your [medication] can help—take it now, [Name]."
+   }
+]
