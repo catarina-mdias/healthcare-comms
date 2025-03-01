@@ -12,7 +12,6 @@ from medication_adherence.config import DATA_DIR
 from medication_adherence.schema import PatientProfile
 from medication_adherence.utils import load_json_file
 
-
 # In[2]:
 
 
@@ -49,4 +48,3 @@ communication_dict["message"]
 
 
 print(communication_dict)
-

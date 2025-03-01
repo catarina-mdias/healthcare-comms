@@ -108,9 +108,6 @@ class VectorDatabase:
 
         return similar_docs
 
-    def close(self):
-        self._store.delete_collection()
-
     def _load_documents(
         self,
         jq_schema: str,

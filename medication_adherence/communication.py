@@ -39,7 +39,6 @@ UPDATE_DELTA = 0.05
 class MedicationAdherenceCommunication:
     def __init__(self):
         self.medication_adherence_vector_db = self._init_vector_db()
-
         self.chat_model = ChatModel(openai_key=settings.OPENAI_API_KEY)
 
     @staticmethod
@@ -162,8 +161,9 @@ class MedicationAdherenceCommunication:
         # Reinitialize vector database with updated data
         self.medication_adherence_vector_db = self._init_vector_db()
 
+    @staticmethod
     def _update_entry_likelihood(
-        self, entry, was_successful: bool, is_high_success: bool
+        entry, was_successful: bool, is_high_success: bool
     ) -> None:
 
         should_increase = (is_high_success and was_successful) or (

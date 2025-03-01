@@ -8,7 +8,6 @@ help:
 	@echo "clean             : cleans all unnecessary files."
 	@echo "test              : run tests."
 	@echo "nb-to-python      : convert notebooks to python."
-	@echo "run-nb-as-python  : run notebook converted python files."
 	@echo "nb-ready          : clean and nb-to-python."
 
 
@@ -52,9 +51,6 @@ test:
 nb-to-python:
 	jupyter nbconvert notebooks/*.ipynb --to script
 
-.PHONY: run-nb-as-python
-run-nb-as-python:
-	for f in notebooks/*.py; do python $$f; done
 
 .PHONY: nb-ready
 nb-ready: clean nb-to-python
