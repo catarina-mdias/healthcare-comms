@@ -13,7 +13,7 @@ settings = get_settings()
 
 # LLM Completion configs
 GPT_MODEL = "gpt-4o"
-TEMPERATURE = 0.5
+TEMPERATURE = 0.6
 
 # Prompt template configs
 PROMPT_TEMPLATE_MED_ADHERENCE = PromptTemplate(
