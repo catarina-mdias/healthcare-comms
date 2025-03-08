@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 from communication.config import PROMPTS_DIR
 from communication.utils import StrEnum
@@ -25,6 +25,7 @@ class PromptTemplate:
         self._jinja_env = Environment(
             loader=FileSystemLoader([prompts_dir]),
             trim_blocks=True,
+            undefined=StrictUndefined,
         )
 
         self._template_filenames = {
