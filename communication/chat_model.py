@@ -2,7 +2,7 @@ import logging
 
 from openai import AsyncOpenAI
 
-from medication_adherence.utils import StrEnum
+from communication.utils import StrEnum
 
 
 class OpenAIKeys(str):

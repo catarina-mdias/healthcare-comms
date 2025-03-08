@@ -1,6 +1,10 @@
 from pydantic import BaseModel, Field
 
-from medication_adherence.utils import StrEnum
+from communication.utils import StrEnum
+
+
+class CommunicationUseCase(StrEnum):
+    MEDICATION_ADHERENCE = "medication_adherence"
 
 
 # Define enums for fields with limited valid options

@@ -7,20 +7,20 @@
 import json
 from typing import Dict, Tuple
 
-from medication_adherence.chat_model import ChatModel, generate_message
-from medication_adherence.config import DATA_DIR, get_settings
-from medication_adherence.prompt import PromptTemplate
-from medication_adherence.utils import load_json_file
+from communication.chat_model import ChatModel, generate_message
+from communication.config import DATA_DIR, get_settings
+from communication.prompt import PromptTemplate
+from communication.utils import load_json_file
 
 
-# In[3]:
+# In[2]:
 
 
 patients = load_json_file(DATA_DIR / "patients.json")
 messages = load_json_file(DATA_DIR / "messages.json")
 
 
-# In[5]:
+# In[3]:
 
 
 prompt_template_dataset_generator = PromptTemplate(
@@ -33,7 +33,7 @@ TEMPERATURE = 0.1  # low value as we want determinstic responses
 GPT_MODEL = "gpt-4o"
 
 
-# In[6]:
+# In[4]:
 
 
 async def get_success_likelihood(
@@ -59,7 +59,7 @@ async def get_success_likelihood(
     return float(response_dict["likelihood"]), response_dict["explanation"]
 
 
-# In[ ]:
+# In[5]:
 
 
 dataset = []

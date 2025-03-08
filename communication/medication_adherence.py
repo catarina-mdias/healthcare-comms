@@ -1,12 +1,13 @@
 import json
 from typing import Dict, List
 
-from medication_adherence.chat_model import ChatModel, generate_message
-from medication_adherence.config import DATA_DIR, get_settings
-from medication_adherence.prompt import PromptTemplate
-from medication_adherence.schema import PatientProfile
-from medication_adherence.utils import load_json_file
-from medication_adherence.vector_database import VectorDatabase
+from communication.chat_model import ChatModel, generate_message
+from communication.communication import Communication
+from communication.config import DATA_DIR, get_settings
+from communication.prompt import PromptTemplate
+from communication.schema import CommunicationUseCase, PatientProfile
+from communication.utils import load_json_file
+from communication.vector_database import VectorDatabase
 
 settings = get_settings()
 
@@ -36,8 +37,11 @@ LOW_SUCCESS_MESSAGES_COUNT = 2
 UPDATE_DELTA = 0.05
 
 
-class MedicationAdherenceCommunication:
-    def __init__(self):
+class MedicationAdherenceCommunication(Communication):
+    def __init__(
+        self,
+    ):
+        super().__init__(use_case=CommunicationUseCase.MEDICATION_ADHERENCE)
         self.medication_adherence_vector_db = self._init_vector_db()
         self.chat_model = ChatModel(openai_key=settings.OPENAI_API_KEY)
 
@@ -106,28 +110,7 @@ class MedicationAdherenceCommunication:
             },
         }
 
-    def _get_similar_profiles(self, patient_dict: Dict) -> List[int]:
-        similar_profiles = self.medication_adherence_vector_db.get_documents_with_similarity_score(  # noqa
-            user_query=str(patient_dict),
-            top_k=TOP_N_DOCS,
-            score_threshold=SIMILARITY_THRESHOLD,
-        )
-        return [doc.document_id for doc in similar_profiles]
-
-    @staticmethod
-    def _get_sorted_entries(profile_ids: List[int]) -> List[Dict]:
-        kb_data = load_json_file(DATA_DIR / KB_FILE_NAME)
-        matching_entries = [
-            entry for entry in kb_data if entry["id"] in profile_ids
-        ]
-        sorted_entries = sorted(
-            matching_entries,
-            key=lambda x: x["success_likelihood"],
-            reverse=True,
-        )
-        return sorted_entries
-
-    async def update_success_likelihoods(
+    async def act_on_communication_result(
         self,
         was_successful: bool,
         high_success_examples_id: List[int],
@@ -160,6 +143,27 @@ class MedicationAdherenceCommunication:
 
         # Reinitialize vector database with updated data
         self.medication_adherence_vector_db = self._init_vector_db()
+
+    def _get_similar_profiles(self, patient_dict: Dict) -> List[int]:
+        similar_profiles = self.medication_adherence_vector_db.get_documents_with_similarity_score(  # noqa
+            user_query=str(patient_dict),
+            top_k=TOP_N_DOCS,
+            score_threshold=SIMILARITY_THRESHOLD,
+        )
+        return [doc.document_id for doc in similar_profiles]
+
+    @staticmethod
+    def _get_sorted_entries(profile_ids: List[int]) -> List[Dict]:
+        kb_data = load_json_file(DATA_DIR / KB_FILE_NAME)
+        matching_entries = [
+            entry for entry in kb_data if entry["id"] in profile_ids
+        ]
+        sorted_entries = sorted(
+            matching_entries,
+            key=lambda x: x["success_likelihood"],
+            reverse=True,
+        )
+        return sorted_entries
 
     @staticmethod
     def _update_entry_likelihood(

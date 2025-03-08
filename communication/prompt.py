@@ -2,8 +2,8 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-from medication_adherence.config import PROMPTS_DIR
-from medication_adherence.utils import StrEnum
+from communication.config import PROMPTS_DIR
+from communication.utils import StrEnum
 
 
 class PromptTemplateModelRole(StrEnum):
