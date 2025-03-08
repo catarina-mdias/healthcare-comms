@@ -80,7 +80,7 @@ for patient in patients:
             "success_likelihood": likelihood,
         }
         dataset.append(row)
-        row_number = row_number + 1
+        row_number += 1
 
 
 # In[ ]:
