@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import json
@@ -13,14 +13,14 @@ from communication.prompt import PromptTemplate
 from communication.utils import load_json_file
 
 
-# In[2]:
+# In[ ]:
 
 
 patients = load_json_file(DATA_DIR / "patients.json")
 messages = load_json_file(DATA_DIR / "messages.json")
 
 
-# In[3]:
+# In[ ]:
 
 
 prompt_template_dataset_generator = PromptTemplate(
@@ -33,7 +33,7 @@ TEMPERATURE = 0.1  # low value as we want determinstic responses
 GPT_MODEL = "gpt-4o"
 
 
-# In[4]:
+# In[ ]:
 
 
 async def get_success_likelihood(
@@ -59,30 +59,35 @@ async def get_success_likelihood(
     return float(response_dict["likelihood"]), response_dict["explanation"]
 
 
-# In[5]:
+# In[ ]:
 
 
 dataset = []
+row_number = 0
 for patient in patients:
     for message in messages:
         message_text = message["message"]
         likelihood, reasoning = await get_success_likelihood(
-            patient_data=patient, message_text=message_text
+            patient_data=patient["profile"], message_text=message_text
         )
         row = {
-            "patient_profile": patient,
+            "id": row_number,
+            "patient_id": patient["id"],
+            "message_id": message["id"],
+            "patient_profile": patient["profile"],
             "message": message_text,
             "reasoning": reasoning,
             "success_likelihood": likelihood,
         }
         dataset.append(row)
+        row_number = row_number + 1
 
 
 # In[ ]:
 
 
 with open(
-    DATA_DIR / "medication_adherence_kb.json", "w", encoding="utf-8"
+    DATA_DIR / "medication_adherence_kb_2.json", "w", encoding="utf-8"
 ) as f:
     json.dump(dataset, f, indent=2, ensure_ascii=False)
 
