@@ -20,12 +20,12 @@ repos:
       args: ["clean"]
       language: system
       pass_filenames: false
-    #- id: test
-    #  name: test
-    #  entry: make
-    #  args: ["test"]
-    #  language: system
-    #  pass_filenames: false
+    - id: test
+      name: test
+      entry: make
+      args: ["test"]
+      language: system
+      pass_filenames: false
     - id: nb-to-python
       name: nb-to-python
       entry: make
