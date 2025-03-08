@@ -86,9 +86,7 @@ for patient in patients:
 # In[ ]:
 
 
-with open(
-    DATA_DIR / "medication_adherence_kb_2.json", "w", encoding="utf-8"
-) as f:
+with open(DATA_DIR / "medication_adherence.json", "w", encoding="utf-8") as f:
     json.dump(dataset, f, indent=2, ensure_ascii=False)
 
 print(f"Generated dataset with {len(dataset)} rows and saved to file")

@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from communication.chat_model import ChatModel, generate_message
 from communication.communication import Communication
@@ -24,11 +24,13 @@ PROMPT_TEMPLATE_MED_ADHERENCE = PromptTemplate(
 # Vector DB configs
 EMBEDDING_MODEL = "text-embedding-3-small"
 SIMILARITY_THRESHOLD = 0.75
-TOP_N_DOCS = 100
+TOP_N_PATIENTS = 3
 
 # Knowledge base configs
-KB_FILE_NAME = "medication_adherence_kb.json"
-KB_FILES_JQ_SCHEMA = ".[] | {content: .patient_profile, metadata: {id: .id}}"
+PATIENTS_FILENAME = "patients.json"
+PATIENTS_FILE_JQ_SCHEMA = ".[] | {content: .profile, metadata: {id: .id}}"
+
+MEDICATION_ADHERENCE_DATASET_FILENAME = "medication_adherence.json"
 
 # Message generation configs
 HIGH_SUCCESS_MESSAGES_COUNT = 3
@@ -42,17 +44,20 @@ class MedicationAdherenceCommunication(Communication):
         self,
     ):
         super().__init__(use_case=CommunicationUseCase.MEDICATION_ADHERENCE)
-        self.medication_adherence_vector_db = self._init_vector_db()
+        self.patients_vector_db = self._init_vector_db()
+        self.medication_adherence_data = load_json_file(
+            DATA_DIR / MEDICATION_ADHERENCE_DATASET_FILENAME
+        )
         self.chat_model = ChatModel(openai_key=settings.OPENAI_API_KEY)
 
     @staticmethod
     def _init_vector_db():
         return VectorDatabase(
-            kb_file_name=KB_FILE_NAME,
+            kb_file_name=PATIENTS_FILENAME,
             kb_directory_path=DATA_DIR,
             embedding_model=EMBEDDING_MODEL,
             openai_key=settings.OPENAI_API_KEY,
-            file_jq_schema=KB_FILES_JQ_SCHEMA,
+            file_jq_schema=PATIENTS_FILE_JQ_SCHEMA,
         )
 
     async def get_communication(
@@ -65,12 +70,9 @@ class MedicationAdherenceCommunication(Communication):
             {k: v for k, v in patient_profile.items() if k != "name"}
         )
 
-        sorted_entries = self._get_sorted_entries(
-            profile_ids=similar_profile_ids
+        high_success_messages, low_success_messages = (
+            self._get_messages_given_similar_profiles(similar_profile_ids)
         )
-
-        high_success_messages = sorted_entries[:HIGH_SUCCESS_MESSAGES_COUNT]
-        low_success_messages = sorted_entries[-LOW_SUCCESS_MESSAGES_COUNT:]
 
         system_message = PROMPT_TEMPLATE_MED_ADHERENCE.build_system_message()
         user_message = PROMPT_TEMPLATE_MED_ADHERENCE.build_user_message(
@@ -116,12 +118,11 @@ class MedicationAdherenceCommunication(Communication):
         high_success_examples_id: List[int],
         low_success_examples_id: List[int],
     ) -> None:
-        # Load knowledge base data
-        kb_file_path = DATA_DIR / KB_FILE_NAME
-        kb_data = load_json_file(kb_file_path)
 
         # Create ID-to-entry mapping for faster lookups
-        kb_data_map = {entry["id"]: entry for entry in kb_data}
+        kb_data_map = {
+            entry["id"]: entry for entry in self.medication_adherence_data
+        }
 
         # Update high success examples
         for id in high_success_examples_id:
@@ -138,32 +139,45 @@ class MedicationAdherenceCommunication(Communication):
                 )
 
         # Save updated data
-        with open(kb_file_path, "w", encoding="utf-8") as f:
-            json.dump(kb_data, f, indent=2, ensure_ascii=False)
-
-        # Reinitialize vector database with updated data
-        self.medication_adherence_vector_db = self._init_vector_db()
+        with open(
+            DATA_DIR / MEDICATION_ADHERENCE_DATASET_FILENAME,
+            "w",
+            encoding="utf-8",
+        ) as f:
+            json.dump(
+                self.medication_adherence_data, f, indent=2, ensure_ascii=False
+            )
 
     def _get_similar_profiles(self, patient_dict: Dict) -> List[int]:
-        similar_profiles = self.medication_adherence_vector_db.get_documents_with_similarity_score(  # noqa
+        similar_profiles = self.patients_vector_db.get_documents_with_similarity_score(  # noqa
             user_query=str(patient_dict),
-            top_k=TOP_N_DOCS,
+            top_k=TOP_N_PATIENTS,
             score_threshold=SIMILARITY_THRESHOLD,
         )
         return [doc.document_id for doc in similar_profiles]
 
-    @staticmethod
-    def _get_sorted_entries(profile_ids: List[int]) -> List[Dict]:
-        kb_data = load_json_file(DATA_DIR / KB_FILE_NAME)
-        matching_entries = [
-            entry for entry in kb_data if entry["id"] in profile_ids
+    def _get_messages_given_similar_profiles(
+        self, similar_profile_ids: List[int]
+    ) -> Tuple[List[Dict], List[Dict]]:
+        filtered_messages = [
+            row
+            for row in self.medication_adherence_data
+            if row["patient_id"] in similar_profile_ids
         ]
-        sorted_entries = sorted(
-            matching_entries,
+        sorted_messages_by_likelihood = sorted(
+            filtered_messages,
             key=lambda x: x["success_likelihood"],
             reverse=True,
         )
-        return sorted_entries
+
+        high_success_messages = sorted_messages_by_likelihood[
+            :HIGH_SUCCESS_MESSAGES_COUNT
+        ]
+        low_success_messages = sorted_messages_by_likelihood[
+            -LOW_SUCCESS_MESSAGES_COUNT:
+        ]
+
+        return high_success_messages, low_success_messages
 
     @staticmethod
     def _update_entry_likelihood(
