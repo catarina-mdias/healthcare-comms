@@ -86,9 +86,9 @@ def main(base_url: str = LOCALHOST_BASE_URL):
     result = get_medication_adherence_message(base_url=base_url)
     print("Full response:", result)
 
-    print("Message:", result["message"])
+    print("\n\nMessage:", result["message"])
 
-    print("Was this message successful? (yes or no)")
+    print("\nWas this message successful? (yes or no)")
     user_input = input().lower()
     success = user_input in ["yes", "y"]
 
@@ -100,7 +100,7 @@ def main(base_url: str = LOCALHOST_BASE_URL):
         high_success_examples_id=result["high_success_examples_id"],
     )
 
-    print(result)
+    print(result["message"])
 
 
 if __name__ == "__main__":
