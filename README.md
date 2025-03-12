@@ -4,8 +4,6 @@
 This project develops an AI-powered system to boost medication adherence using personalized SMS, 
 leveraging patient profiles, retrieval-augmented generation, and feedback loops to optimize messages. 
 
-The complete report of this project can be found in the following [Notion Page](https://hospitable-stomach-399.notion.site/Boosting-Medication-Adherence-with-Tailored-Communications-1a98bec84f9280aa8749fe046afefe84?pvs=4).
-
 ---
 
 ## Repository Structure
@@ -130,8 +128,7 @@ This folder orchestrates the message generation pipeline, from profile retrieval
 - `tests/`: Unit tests to validate core functionalities, with `test_prompt.py` testing prompt template loading and formatting, and `test_vector_database.py` verifying the vector database’s similarity search and retrieval accuracy.
 - `notebooks/`: Houses the Jupyter notebooks. `dataset.ipynb` used to generate the message-patient dataset with GPT-4o-assigned success likelihoods; and `medication_adherence.ipynb` - an auxiliary notebook for testing the medication adherence pipeline.
 
-## Contributing & Contact
-This repository was created as part of an application to the OfferFit ML Engineer vacancy.
+## Contact
 
 Please connect with me at:
 
